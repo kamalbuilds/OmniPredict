@@ -1,7 +1,7 @@
 {
   "name": "Sonic-AI",
-  "plugins": [],
-  "clients": [],
+  "plugins": ["twitter-poll-tracker"],
+  "clients": ["twitter"],
   "modelProvider": "openrouter",
   "settings": {
     "secrets": {},
