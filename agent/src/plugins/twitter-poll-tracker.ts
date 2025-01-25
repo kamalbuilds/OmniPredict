@@ -1,7 +1,7 @@
 import { Character, Plugin } from "@elizaos/core";
 import { TwitterApi } from "twitter-api-v2";
 import { ethers } from "ethers";
-import PredictionMarketABI from "../abis/PredictionMarket.json";
+import PredictionMarketABI from "../../../abis/PredictionMarket.json";
 
 export class TwitterPollTrackerPlugin implements Plugin {
   private twitter: TwitterApi;
@@ -64,7 +64,7 @@ export class TwitterPollTrackerPlugin implements Plugin {
     await tx.wait();
 
     // Generate shareable link
-    const marketUrl = `https://omnipredict.com/markets/${tweet.id}`;
+    const marketUrl = `https://omnipredict.vercel.app/markets/${tweet.id}`;
 
     // Reply to tweet with market link
     await this.twitter.v2.reply(
