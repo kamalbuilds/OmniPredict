@@ -9,3 +9,4 @@ dist/
 db.sqlite
 .idea
 !src/plugins/twitter-poll-tracker.ts
+bun.lockb

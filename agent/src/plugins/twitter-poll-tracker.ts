@@ -4,6 +4,9 @@ import { ethers } from "ethers";
 import PredictionMarketABI from "../../../abis/PredictionMarket.json";
 
 export class TwitterPollTrackerPlugin implements Plugin {
+    public name: string = "Twitter Poll Tracker";
+    public description: string = "Tracks Twitter polls and creates prediction markets";
+    public version: string = "1.0.0";
   private twitter: TwitterApi;
   private provider: ethers.providers.JsonRpcProvider;
   private predictionMarket: ethers.Contract;
@@ -64,7 +67,7 @@ export class TwitterPollTrackerPlugin implements Plugin {
     await tx.wait();
 
     // Generate shareable link
-    const marketUrl = `https://omnipredict.vercel.app/markets/${tweet.id}`;
+    const marketUrl = `https://yourapp.com/markets/${tweet.id}`;
 
     // Reply to tweet with market link
     await this.twitter.v2.reply(
@@ -76,4 +79,4 @@ export class TwitterPollTrackerPlugin implements Plugin {
   async stop() {
     // Cleanup
   }
-} 
+}
