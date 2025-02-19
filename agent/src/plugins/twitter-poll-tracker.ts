@@ -7,9 +7,9 @@ export class TwitterPollTrackerPlugin implements Plugin {
     public name: string = "Twitter Poll Tracker";
     public description: string = "Tracks Twitter polls and creates prediction markets";
     public version: string = "1.0.0";
-  private twitter: TwitterApi;
-  private provider: ethers.providers.JsonRpcProvider;
-  private predictionMarket: ethers.Contract;
+    private twitter: TwitterApi;
+    private provider: ethers.providers.JsonRpcProvider;
+    private predictionMarket: ethers.Contract;
 
   constructor(character: Character) {
     // Initialize Twitter client

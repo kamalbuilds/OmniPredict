@@ -18,6 +18,7 @@ import {
 } from "@/components/Common/types/common.types";
 import { EditorType } from "@/components/Feed/types/feed.types";
 import { AccessControlParams } from "@livepeer/react";
+import { ThirdwebProvider } from "thirdweb";
 
 export const config = getDefaultConfig({
   appName: "OmniPredict",
@@ -161,6 +162,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
+    <ThirdwebProvider>
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
@@ -196,5 +198,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
+    </ThirdwebProvider>
   );
 }
