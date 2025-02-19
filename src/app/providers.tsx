@@ -18,7 +18,7 @@ import {
 } from "@/components/Common/types/common.types";
 import { EditorType } from "@/components/Feed/types/feed.types";
 import { AccessControlParams } from "@livepeer/react";
-import { ThirdwebProvider } from "thirdweb";
+import { ThirdwebProvider } from "thirdweb/react";
 
 export const config = getDefaultConfig({
   appName: "OmniPredict",

@@ -1,5 +1,5 @@
 import { ConnectButton, lightTheme, useActiveAccount } from "thirdweb/react";
-import { client } from "@/app/client";
+import { client } from "@/client";
 import { baseSepolia } from "thirdweb/chains";
 import { inAppWallet } from "thirdweb/wallets";
 import { useState } from "react";

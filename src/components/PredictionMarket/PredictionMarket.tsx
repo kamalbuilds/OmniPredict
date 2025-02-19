@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import PredictionMarketABI from "@/abis/PredictionMarket.json";
+import PredictionMarketABI from "../../../abis/PredictionMarket.json";
 
 interface Market {
   id: string;
   question: string;
   options: string[];
   endTime: number;
-  totalStaked: ethers.BigNumber;
+  totalStaked: ethers.BigNumberish;
 }
 
 export const PredictionMarket = ({ tweetId }: { tweetId: string }) => {

@@ -1,4 +1,4 @@
-// src/client.ts
+
 import { createThirdwebClient } from "thirdweb";
 
 export const client = createThirdwebClient({
