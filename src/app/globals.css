@@ -18,7 +18,11 @@
 
 html {
   font-family: "Perfect";
-  background: url("https://thedial.infura-ipfs.io/ipfs/QmaZMj3P6ai49RNrsARwGGAuVaBaZ27mVbQbqzLLGC9p22");
+  background: url("https://i.scdn.co/image/ab67616d00001e02b3a9162405118225ef8a013d");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
   background-color: #EDC6FF;
 }
 
