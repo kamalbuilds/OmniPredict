@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import PredictionMarketABI from "../../../abis/PredictionMarket.json";
+import { PredictionMarketABI } from "../../../abis/PredictionMarket";
 
 interface Market {
   id: string;

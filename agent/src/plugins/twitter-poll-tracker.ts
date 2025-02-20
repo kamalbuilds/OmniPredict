@@ -24,6 +24,26 @@ export class TwitterPollTrackerPlugin implements Plugin {
     private wallet: ethers.Wallet;
 
   constructor(character: Character) {
+    // Validate required environment variables
+    const requiredEnvVars = {
+      'TWITTER_API_KEY': process.env.TWITTER_API_KEY,
+      'TWITTER_API_SECRET': process.env.TWITTER_API_SECRET,
+      'TWITTER_ACCESS_TOKEN': process.env.TWITTER_ACCESS_TOKEN,
+      'TWITTER_ACCESS_SECRET': process.env.TWITTER_ACCESS_SECRET,
+      'CHAIN_RPC_URL': process.env.CHAIN_RPC_URL,
+      'PRIVATE_KEY': process.env.PRIVATE_KEY,
+      'PREDICTION_MARKET_ADDRESS': process.env.PREDICTION_MARKET_ADDRESS
+    };
+
+    // Check for missing environment variables
+    const missingVars = Object.entries(requiredEnvVars)
+      .filter(([_, value]) => !value)
+      .map(([key]) => key);
+
+    if (missingVars.length > 0) {
+      throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
+    }
+
     // Initialize Twitter client
     this.twitter = new TwitterApi({
       appKey: process.env.TWITTER_API_KEY!,
@@ -32,14 +52,26 @@ export class TwitterPollTrackerPlugin implements Plugin {
       accessSecret: process.env.TWITTER_ACCESS_SECRET!,
     });
 
-    // Initialize blockchain connection
-    this.provider = new ethers.providers.JsonRpcProvider(process.env.CHAIN_RPC_URL);
-    this.wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, this.provider);
-    this.predictionMarket = new ethers.Contract(
-      process.env.PREDICTION_MARKET_ADDRESS!,
-      PredictionMarketABI,
-      this.wallet
-    );
+    try {
+      // Initialize blockchain connection
+      this.provider = new ethers.providers.JsonRpcProvider(process.env.CHAIN_RPC_URL);
+      
+      // Validate private key format
+      if (!process.env.PRIVATE_KEY?.startsWith('0x')) {
+        this.wallet = new ethers.Wallet('0x' + process.env.PRIVATE_KEY, this.provider);
+      } else {
+        this.wallet = new ethers.Wallet(process.env.PRIVATE_KEY, this.provider);
+      }
+
+      this.predictionMarket = new ethers.Contract(
+        process.env.PREDICTION_MARKET_ADDRESS!,
+        PredictionMarketABI,
+        this.wallet
+      );
+    } catch (error) {
+      console.error('Error initializing blockchain connection:', error);
+      throw new Error('Failed to initialize blockchain connection');
+    }
   }
 
   async start() {
