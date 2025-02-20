@@ -1,13 +1,30 @@
 import { Character, Clients, defaultCharacter, ModelProviderName } from "@elizaos/core";
-import { TwitterPollTrackerPlugin } from "./plugins/twitter-poll-tracker.js";
+import { TwitterApi } from "twitter-api-v2";
+import { PredictionMarketPlugin } from "./plugins/client-twitter/src/plugins/prediction-market";
 import solanaPlugin from "@elizaos/plugin-solana";
 
-const twitterPlugin = new TwitterPollTrackerPlugin(defaultCharacter);
+
+// Initialize Twitter client
+const twitterClient = new TwitterApi({
+    appKey: process.env.TWITTER_API_KEY!,
+    appSecret: process.env.TWITTER_API_SECRET!,
+    accessToken: process.env.TWITTER_ACCESS_TOKEN!,
+    accessSecret: process.env.TWITTER_ACCESS_SECRET!,
+});
+
+// Initialize prediction market plugin
+const predictionMarketPlugin = new PredictionMarketPlugin(twitterClient, {
+    chainRpcUrl: process.env.CHAIN_RPC_URL!,
+    privateKey: process.env.PRIVATE_KEY!,
+    contractAddress: process.env.PREDICTION_MARKET_ADDRESS!,
+    agentUsername: process.env.AGENT_USERNAME!,
+});
+
 export const character: Character = {
     ...defaultCharacter,
     name: "Sonic AI Agent",
     bio: "Creates prediction markets from Twitter polls",
-    plugins: [solanaPlugin, twitterPlugin],
+    plugins: [solanaPlugin, predictionMarketPlugin],
     clients: [Clients.TWITTER],
     modelProvider: ModelProviderName.GROQ,
     settings: {
