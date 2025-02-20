@@ -1,1 +1,1 @@
-export * from './prediction-market'; 
+export * from './prediction-market.js'; 
