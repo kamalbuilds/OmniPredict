@@ -1,18 +1,33 @@
 import { client } from "@/client";
-import { getContract } from "thirdweb";
-import { baseSepolia } from "thirdweb/chains";
+import { defineChain, getContract } from "thirdweb";
+import { baseSepolia  } from "thirdweb/chains";
 
-export const contractAddress = "0x124D803F8BC43cE1081110a08ADd1cABc5c83a3f";
-export const tokenAddress = "0x4D9604603527322F44c318FB984ED9b5A9Ce9f71";
+ const sonicblazetestnet = defineChain({
+    id: 57054,
+    name: "Sonic Blaze Testnet",
+    nativeCurrency: { name: "Sonic", symbol: "S", decimals: 18 },
+    blockExplorers: [
+      {
+        name: "BlazeScan",
+        url: "https://blaze.soniclabs.com",
+      },
+    ],
+    rpc: "https://rpc.ankr.com/sonic_blaze_testnet",
+    testnet: true,
+  });
+  
+
+export const contractAddress = "0x9Dc50a13c06Bc9B46430581180158108A59308f2";
+export const tokenAddress = "0x1602CF4fFa1da92d1708D74E5A9985593176171a";
 
 export const contract = getContract({
     client: client,
-    chain: baseSepolia,
+    chain: sonicblazetestnet,
     address: contractAddress
 });
 
 export const tokenContract = getContract({
     client: client,
-    chain: baseSepolia,
+    chain: sonicblazetestnet,
     address: tokenAddress
 });
