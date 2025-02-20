@@ -17,7 +17,7 @@ export const PredictionMarket = ({ tweetId }: { tweetId: string }) => {
   useEffect(() => {
     const loadMarket = async () => {
       try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const provider = new ethers.BrowserProvider(window.ethereum);
         const contract = new ethers.Contract(
           process.env.NEXT_PUBLIC_PREDICTION_MARKET_ADDRESS!,
           PredictionMarketABI,

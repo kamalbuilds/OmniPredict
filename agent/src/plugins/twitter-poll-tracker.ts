@@ -1,7 +1,7 @@
 import { Character, Plugin } from "@elizaos/core";
 import { TwitterApi } from "twitter-api-v2";
 import { ethers } from "ethers";
-import PredictionMarketABI from "../../../frontend/abis/PredictionMarket.json";
+import { PredictionMarketABI } from "../../abis/PredictionMarket";
 
 interface TweetData {
   data: {
