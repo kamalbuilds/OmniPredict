@@ -1,14 +1,15 @@
 import { Character, Clients, defaultCharacter, ModelProviderName } from "@elizaos/core";
-import { TwitterPollTrackerPlugin } from "./plugins/twitter-poll-tracker";
+import { TwitterPollTrackerPlugin } from "./plugins/twitter-poll-tracker.js";
 import solanaPlugin from "@elizaos/plugin-solana";
 
+const twitterPlugin = new TwitterPollTrackerPlugin(defaultCharacter);
 export const character: Character = {
     ...defaultCharacter,
     name: "Sonic AI Agent",
-    description: "Creates prediction markets from Twitter polls",
-    plugins: [ solanaPlugin, TwitterPollTrackerPlugin],
+    bio: "Creates prediction markets from Twitter polls",
+    plugins: [solanaPlugin, twitterPlugin],
     clients: [Clients.TWITTER],
-    modelProvider: ModelProviderName.OPENAI,
+    modelProvider: ModelProviderName.GROQ,
     settings: {
         secrets: {},
         voice: {
