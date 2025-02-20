@@ -1,7 +1,7 @@
 import { Character, Plugin } from "@elizaos/core";
 import { TwitterApi } from "twitter-api-v2";
 import { ethers } from "ethers";
-import PredictionMarketABI from "../../../abis/PredictionMarket.json";
+import PredictionMarketABI from "../../../frontend/abis/PredictionMarket.json";
 
 export class TwitterPollTrackerPlugin implements Plugin {
     public name: string = "Twitter Poll Tracker";
@@ -67,7 +67,7 @@ export class TwitterPollTrackerPlugin implements Plugin {
     await tx.wait();
 
     // Generate shareable link
-    const marketUrl = `https://yourapp.com/markets/${tweet.id}`;
+    const marketUrl = `https://.com/markets/${tweet.id}`;
 
     // Reply to tweet with market link
     await this.twitter.v2.reply(
