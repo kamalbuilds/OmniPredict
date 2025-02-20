@@ -17,7 +17,7 @@ const predictionMarketPlugin = new PredictionMarketPlugin(twitterClient, {
     privateKey: process.env.PRIVATE_KEY!,
     contractAddress: process.env.PREDICTION_MARKET_ADDRESS!,
     agentUsername: process.env.AGENT_USERNAME!,
-    bearerToken: process.env.TWITTER_BEARER_TOKEN!,
+    bearerToken: process.env.TWITTER_BEARER_TOKEN || '',
 });
 
 // Start the prediction market plugin
@@ -36,7 +36,7 @@ export const character: Character = {
     name: "Sonic AI Agent",
     bio: "Creates prediction markets from Twitter polls",
     plugins: [predictionMarketPlugin],
-    clients: [Clients.TWITTER],
+    clients: [Clients.TWITTER, Clients.TELEGRAM],
     modelProvider: ModelProviderName.GROQ,
     settings: {
         secrets: {},
