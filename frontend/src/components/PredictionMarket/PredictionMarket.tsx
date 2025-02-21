@@ -1,8 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
-import { ethers } from "ethers";
-import { PredictionMarketABI } from "../../../abis/PredictionMarket";
-import { useAccount } from "wagmi";
+import { useContract, useReadContract } from "thirdweb/react";
+import { contract as contractConfig } from "@/constants/contract";
 
 interface Market {
   question: string;
@@ -31,90 +30,38 @@ export const PredictionMarket = ({ marketId }: { marketId: string }) => {
   const [sharesBalance, setSharesBalance] = useState<SharesBalance>();
   const [loading, setLoading] = useState(true);
   const [amount, setAmount] = useState("");
-  const { address } = useAccount();
+
+  // Use the contract hook to get the contract instance
+  const { data: contract } = useContract(contractConfig.address);
+
+  // Get market data
+  const { data: marketData } = useReadContract({
+    contract,
+    functionName: "markets",
+    args: [marketId]
+  });
 
   useEffect(() => {
-    const loadMarket = async () => {
-      try {
-        const provider = new ethers.BrowserProvider(window.ethereum);
-        const contract = new ethers.Contract(
-          process.env.NEXT_PUBLIC_PREDICTION_MARKET_ADDRESS!,
-          PredictionMarketABI,
-          provider
-        );
-
-        const marketData = await contract.markets(marketId);
-        setMarket({
-          question: marketData.question,
-          endTime: Number(marketData.endTime),
-          outcome: Number(marketData.outcome),
-          optionA: marketData.optionA,
-          optionB: marketData.optionB,
-          totalOptionAShares: Number(marketData.totalOptionAShares),
-          totalOptionBShares: Number(marketData.totalOptionBShares),
-          resolved: marketData.resolved,
-          category: marketData.category,
-          tags: marketData.tags,
-          marketFee: Number(marketData.marketFee),
-          validationPeriod: Number(marketData.validationPeriod),
-          totalVolume: Number(marketData.totalVolume),
-          disputed: marketData.disputed
-        });
-
-        if (address) {
-          const balance = await contract.getSharesBalance(marketId, address);
-          setSharesBalance({
-            optionAShares: Number(balance.optionAShares),
-            optionBShares: Number(balance.optionBShares)
-          });
-        }
-      } catch (err) {
-        console.error("Error loading market:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadMarket();
-  }, [marketId, address]);
-
-  const buyShares = async (isOptionA: boolean) => {
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const contract = new ethers.Contract(
-        process.env.NEXT_PUBLIC_PREDICTION_MARKET_ADDRESS!,
-        PredictionMarketABI,
-        signer
-      );
-
-      const tx = await contract.buyShares(
-        marketId,
-        isOptionA,
-        ethers.parseEther(amount)
-      );
-      await tx.wait();
-
-      // Refresh market data and balance
-      const marketData = await contract.markets(marketId);
-      setMarket(prev => ({
-        ...prev!,
-        totalOptionAShares: Number(marketData.totalOptionAShares),
-        totalOptionBShares: Number(marketData.totalOptionBShares),
-        totalVolume: Number(marketData.totalVolume)
-      }));
-
-      if (address) {
-        const balance = await contract.getSharesBalance(marketId, address);
-        setSharesBalance({
-          optionAShares: Number(balance.optionAShares),
-          optionBShares: Number(balance.optionBShares)
-        });
-      }
-    } catch (err) {
-      console.error("Error buying shares:", err);
+    if (marketData) {
+      setMarket({
+        question: marketData[0],
+        optionA: marketData[1],
+        optionB: marketData[2],
+        endTime: Number(marketData[3]),
+        outcome: Number(marketData[4]),
+        totalOptionAShares: Number(marketData[5]),
+        totalOptionBShares: Number(marketData[6]),
+        resolved: marketData[7],
+        category: marketData[8],
+        tags: marketData[9],
+        marketFee: Number(marketData[10]),
+        validationPeriod: Number(marketData[11]),
+        totalVolume: Number(marketData[12]),
+        disputed: marketData[13]
+      });
+      setLoading(false);
     }
-  };
+  }, [marketData]);
 
   if (loading) return <div>Loading...</div>;
   if (!market) return <div>Market not found</div>;
@@ -140,7 +87,6 @@ export const PredictionMarket = ({ marketId }: { marketId: string }) => {
             />
             <button 
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
-              onClick={() => buyShares(true)}
               disabled={market.resolved || !amount}
             >
               Buy Shares
@@ -164,7 +110,6 @@ export const PredictionMarket = ({ marketId }: { marketId: string }) => {
             />
             <button 
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
-              onClick={() => buyShares(false)}
               disabled={market.resolved || !amount}
             >
               Buy Shares

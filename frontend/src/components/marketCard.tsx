@@ -2,6 +2,7 @@ import React from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 import { formatEther } from "viem";
 import { useToast } from "./ui/use-toast";
 import { useActiveAccount, useReadContract } from "thirdweb/react";
@@ -117,59 +118,54 @@ export function MarketCard({ index, filter }: MarketCardProps) {
     };
 
     return (
-        <Card key={index} className="retro-card w-full max-w-md p-4 space-y-4 backdrop-blur-sm bg-opacity-10">
-            {isLoadingMarketData ? (
-                <MarketCardSkeleton />
-            ) : (
-                <>
-                    <CardHeader>
-                        {market && <MarketTime endTime={market.endTime} />}
-                        <CardTitle>{market?.question}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        {market && (
-                            <MarketProgress 
-                                optionA={market.optionA}
-                                optionB={market.optionB}
-                                totalOptionAShares={market.totalOptionAShares}
-                                totalOptionBShares={market.totalOptionBShares}
-                            />
-                        )}
-                        {new Date(Number(market?.endTime) * 1000) < new Date() ? (
-                            market?.resolved ? (
-                                <MarketResolved 
-                                    marketId={index}
-                                    outcome={market.outcome}
+        <Link href={`/markets/${index}`} className="block">
+            <Card key={index} className="retro-card w-full max-w-md p-4 space-y-4 backdrop-blur-sm bg-opacity-10 hover:shadow-lg transition-shadow">
+                {isLoadingMarketData ? (
+                    <MarketCardSkeleton />
+                ) : (
+                    <>
+                        <CardHeader>
+                            {market && <MarketTime endTime={market.endTime} />}
+                            <CardTitle>{market?.question}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            {market && (
+                                <MarketProgress 
                                     optionA={market.optionA}
                                     optionB={market.optionB}
+                                    totalOptionAShares={market.totalOptionAShares}
+                                    totalOptionBShares={market.totalOptionBShares}
                                 />
+                            )}
+                            {new Date(Number(market?.endTime) * 1000) < new Date() ? (
+                                market?.resolved ? (
+                                    <MarketResolved 
+                                        marketId={index}
+                                        outcome={market.outcome}
+                                        optionA={market.optionA}
+                                        optionB={market.optionB}
+                                    />
+                                ) : (
+                                    <MarketPending />
+                                )
                             ) : (
-                                <MarketPending />
-                            )
-                        ) : (
-                            <MarketBuyInterface 
-                                marketId={index}
-                                market={market!}
-                            />
-                        )}
-                    </CardContent>
-                    <CardFooter>
-                        {market && sharesBalance && (
-                            <MarketSharesDisplay 
-                                market={market}
-                                sharesBalance={sharesBalance}
-                            />
-                        )}
-                        <Button
-                            onClick={onTrade}
-                            className="w-full retro-button"
-                            disabled={hasEnded && !isResolved}
-                        >
-                            {isResolved ? "View Results" : hasEnded ? "Awaiting Resolution" : "Trade"}
-                        </Button>
-                    </CardFooter>
-                </>
-            )}
-        </Card>
-    )
+                                <MarketBuyInterface 
+                                    marketId={index}
+                                    onTrade={onTrade}
+                                />
+                            )}
+                            {sharesBalance && (
+                                <MarketSharesDisplay 
+                                    optionAShares={sharesBalance.optionAShares}
+                                    optionBShares={sharesBalance.optionBShares}
+                                    optionA={market?.optionA || ""}
+                                    optionB={market?.optionB || ""}
+                                />
+                            )}
+                        </CardContent>
+                    </>
+                )}
+            </Card>
+        </Link>
+    );
 }

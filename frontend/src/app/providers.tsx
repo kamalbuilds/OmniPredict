@@ -70,27 +70,45 @@ export const AppContext = createContext<
           decrypted: boolean;
         }>
       ) => void;
-      imageView: string | undefined;
-      setImageView: (e: SetStateAction<string | undefined>) => void;
-      lensAccount: LensAccount | undefined;
+      lensClient?: PublicClient;
+      lensAccount?: LensAccount;
       setLensAccount: (e: SetStateAction<LensAccount | undefined>) => void;
-      lensClient: PublicClient | undefined;
-      storageClient: StorageClient | undefined;
-      signless: boolean;
-      setSignless: (e: SetStateAction<boolean>) => void;
-      gifOpen: { id: string; gif: string; open: boolean };
-      setGifOpen: (
-        e: SetStateAction<{ id: string; gif: string; open: boolean }>
-      ) => void;
+      indexer?: string;
+      setIndexer: (e: SetStateAction<string | undefined>) => void;
       createAccount: boolean;
       setCreateAccount: (e: SetStateAction<boolean>) => void;
-      notification: string | undefined;
+      notification?: string;
       setNotification: (e: SetStateAction<string | undefined>) => void;
-      indexer: string | undefined;
-      setIndexer: (e: SetStateAction<string | undefined>) => void;
-      setCurrentSession: (e: SetStateAction<CurrentSession>) => void;
-      currentSession: CurrentSession;
-      livepeer: Livepeer | undefined;
+      signless: boolean;
+      setSignless: (e: SetStateAction<boolean>) => void;
+      gifOpen: {
+        id: string;
+        gif: string;
+        open: boolean;
+      };
+      setGifOpen: (
+        e: SetStateAction<{
+          id: string;
+          gif: string;
+          open: boolean;
+        }>
+      ) => void;
+      currentSession: {
+        post?: Post;
+        editors: EditorType[];
+        currentIndex: number;
+      };
+      setCurrentSession: (
+        e: SetStateAction<{
+          post?: Post;
+          editors: EditorType[];
+          currentIndex: number;
+        }>
+      ) => void;
+      imageView?: string;
+      setImageView: (e: SetStateAction<string | undefined>) => void;
+      livepeer?: Livepeer;
+      setLivepeer: (e: SetStateAction<Livepeer | undefined>) => void;
     }
   | undefined
 >(undefined);
@@ -159,45 +177,48 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         })
       );
     }
-  }, []);
+  }, [lensClient]);
 
   return (
-    <ThirdwebProvider>
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
-          <AppContext.Provider
-            value={{
-              imageView,
-              setImageView,
-              lensAccount,
-              postLive,
-              setPostLive,
-              setLensAccount,
-              lensClient,
-              storageClient,
-              indexer,
-              setIndexer,
-              notification,
-              setNotification,
-              createAccount,
-              setCreateAccount,
-              currentSession,
-              setCurrentSession,
-              gifOpen,
-              setGifOpen,
-              signless,
-              setSignless,
-              aiDetails,
-              setAiDetails,
-              livepeer,
-            }}
-          >
-            {children}
-          </AppContext.Provider>
-        </RainbowKitProvider>
+        <ThirdwebProvider 
+          clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
+          activeChain={chains.testnet}
+        >
+          <RainbowKitProvider>
+            <AppContext.Provider
+              value={{
+                imageView,
+                setImageView,
+                lensAccount,
+                setLensAccount,
+                livepeer,
+                setLivepeer,
+                aiDetails,
+                setAiDetails,
+                lensClient,
+                indexer,
+                setIndexer,
+                createAccount,
+                setCreateAccount,
+                notification,
+                setNotification,
+                postLive,
+                setPostLive,
+                signless,
+                setSignless,
+                gifOpen,
+                setGifOpen,
+                currentSession,
+                setCurrentSession,
+              }}
+            >
+              {children}
+            </AppContext.Provider>
+          </RainbowKitProvider>
+        </ThirdwebProvider>
       </QueryClientProvider>
     </WagmiProvider>
-    </ThirdwebProvider>
   );
 }
