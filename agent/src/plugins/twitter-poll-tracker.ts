@@ -1,7 +1,10 @@
 import { Character, Plugin } from "@elizaos/core";
 import { TwitterApi } from "twitter-api-v2";
 import { ethers } from "ethers";
-import { PredictionMarketABI } from "../../abis/PredictionMarket";
+import {
+  PREDICTION_MARKET_ABI,
+  PREDICTION_MARKET_CONTRACT_ADDRESS,
+} from "../predictionContract/predictionmarket.contract";
 
 interface TweetData {
   data: {
@@ -15,24 +18,25 @@ interface TweetData {
 }
 
 export class TwitterPollTrackerPlugin implements Plugin {
-    public name: string = "Twitter Poll Tracker";
-    public description: string = "Tracks Twitter polls and creates prediction markets";
-    public version: string = "1.0.0";
-    private twitter: TwitterApi;
-    private provider: ethers.providers.JsonRpcProvider;
-    private predictionMarket: ethers.Contract;
-    private wallet: ethers.Wallet;
+  public name: string = "Twitter Poll Tracker";
+  public description: string =
+    "Tracks Twitter polls and creates prediction markets";
+  public version: string = "1.0.0";
+  private twitter: TwitterApi;
+  private provider: ethers.providers.JsonRpcProvider;
+  private predictionMarket: ethers.Contract;
+  private wallet: ethers.Wallet;
 
   constructor(character: Character) {
     // Validate required environment variables
     const requiredEnvVars = {
-      'TWITTER_API_KEY': process.env.TWITTER_API_KEY,
-      'TWITTER_API_SECRET': process.env.TWITTER_API_SECRET,
-      'TWITTER_ACCESS_TOKEN': process.env.TWITTER_ACCESS_TOKEN,
-      'TWITTER_ACCESS_SECRET': process.env.TWITTER_ACCESS_SECRET,
-      'CHAIN_RPC_URL': process.env.CHAIN_RPC_URL,
-      'PRIVATE_KEY': process.env.PRIVATE_KEY,
-      'PREDICTION_MARKET_ADDRESS': process.env.PREDICTION_MARKET_ADDRESS
+      TWITTER_API_KEY: process.env.TWITTER_API_KEY,
+      TWITTER_API_SECRET: process.env.TWITTER_API_SECRET,
+      TWITTER_ACCESS_TOKEN: process.env.TWITTER_ACCESS_TOKEN,
+      TWITTER_ACCESS_SECRET: process.env.TWITTER_ACCESS_SECRET,
+      CHAIN_RPC_URL: process.env.CHAIN_RPC_URL,
+      PRIVATE_KEY: process.env.PRIVATE_KEY,
+      PREDICTION_MARKET_ADDRESS: process.env.PREDICTION_MARKET_ADDRESS,
     };
 
     // Check for missing environment variables
@@ -41,7 +45,9 @@ export class TwitterPollTrackerPlugin implements Plugin {
       .map(([key]) => key);
 
     if (missingVars.length > 0) {
-      throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
+      throw new Error(
+        `Missing required environment variables: ${missingVars.join(", ")}`
+      );
     }
 
     // Initialize Twitter client
@@ -54,23 +60,28 @@ export class TwitterPollTrackerPlugin implements Plugin {
 
     try {
       // Initialize blockchain connection
-      this.provider = new ethers.providers.JsonRpcProvider(process.env.CHAIN_RPC_URL);
-      
+      this.provider = new ethers.providers.JsonRpcProvider(
+        process.env.CHAIN_RPC_URL
+      );
+
       // Validate private key format
-      if (!process.env.PRIVATE_KEY?.startsWith('0x')) {
-        this.wallet = new ethers.Wallet('0x' + process.env.PRIVATE_KEY, this.provider);
+      if (!process.env.PRIVATE_KEY?.startsWith("0x")) {
+        this.wallet = new ethers.Wallet(
+          "0x" + process.env.PRIVATE_KEY,
+          this.provider
+        );
       } else {
         this.wallet = new ethers.Wallet(process.env.PRIVATE_KEY, this.provider);
       }
 
       this.predictionMarket = new ethers.Contract(
-        process.env.PREDICTION_MARKET_ADDRESS!,
-        PredictionMarketABI,
+        PREDICTION_MARKET_CONTRACT_ADDRESS,
+        PREDICTION_MARKET_ABI,
         this.wallet
       );
     } catch (error) {
-      console.error('Error initializing blockchain connection:', error);
-      throw new Error('Failed to initialize blockchain connection');
+      console.error("Error initializing blockchain connection:", error);
+      throw new Error("Failed to initialize blockchain connection");
     }
   }
 
@@ -84,11 +95,11 @@ export class TwitterPollTrackerPlugin implements Plugin {
     }
 
     const stream = await this.twitter.v2.searchStream({
-      'tweet.fields': ['author_id', 'created_at', 'entities'],
-      'expansions': ['referenced_tweets.id'],
+      "tweet.fields": ["author_id", "created_at", "entities"],
+      expansions: ["referenced_tweets.id"],
     });
 
-    stream.on('data', async (tweet: TweetData) => {
+    stream.on("data", async (tweet: TweetData) => {
       try {
         if (this.isValidMarketRequest(tweet)) {
           await this.handleMarketRequest(tweet);
@@ -100,18 +111,22 @@ export class TwitterPollTrackerPlugin implements Plugin {
   }
 
   private isValidMarketRequest(tweet: TweetData): boolean {
-    return tweet.data.text.toLowerCase().includes(`@${process.env.AGENT_USERNAME?.toLowerCase()} create market:`);
+    return tweet.data.text
+      .toLowerCase()
+      .includes(`@${process.env.AGENT_USERNAME?.toLowerCase()} create market:`);
   }
 
-  private parseMarketRequest(text: string): { question: string, options: string[] } | null {
+  private parseMarketRequest(
+    text: string
+  ): { question: string; options: string[] } | null {
     const regex = /"([^"]+)"\s*Options:\s*([^/]+)\/([^/\n]+)/i;
     const match = text.match(regex);
-    
+
     if (!match) return null;
-    
+
     return {
       question: match[1].trim(),
-      options: [match[2].trim(), match[3].trim()]
+      options: [match[2].trim(), match[3].trim()],
     };
   }
 
@@ -119,7 +134,7 @@ export class TwitterPollTrackerPlugin implements Plugin {
     const parsedRequest = this.parseMarketRequest(tweet.data.text);
     if (!parsedRequest) {
       await this.twitter.v2.reply(
-        "Sorry, I couldn't understand the market format. Please use: \"Question\" Options: Option1/Option2",
+        'Sorry, I couldn\'t understand the market format. Please use: "Question" Options: Option1/Option2',
         tweet.data.id
       );
       return;
@@ -138,7 +153,7 @@ export class TwitterPollTrackerPlugin implements Plugin {
       );
       await tx.wait();
 
-      const marketId = await this.predictionMarket.marketCount() - 1;
+      const marketId = (await this.predictionMarket.marketCount()) - 1;
       const marketUrl = `${process.env.FRONTEND_URL}/markets/${marketId}`;
 
       // Reply to tweet with market link
