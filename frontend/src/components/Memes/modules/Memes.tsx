@@ -55,29 +55,22 @@ const Memes: FunctionComponent<MemesProps> = ({
   );
 
   return (
-    <div className="relative w-full h-full pb-6">
-      <div className="relative w-full h-full bg-white rounded-md flex flex-row gap-3 items-start justify-between p-4 border-2 border-sea">
-        <div className="relative w-60 h-full flex flex-col items-start justify-between gap-3">
-          <div className="relative w-full h-fit flex flex-col gap-3">
-            <div className="relative w-fit h-fit flex text-sm text-left">
+    <div className="relative min-w-[25vw] w-[95vw] mx-auto h-full min-h-screen pb-12">
+      <div className="relative w-full h-full bg-black/20 backdrop-blur-lg rounded-2xl flex flex-row gap-8 items-start justify-between p-8 border-2 border-[var(--neon-blue)] shadow-[0_0_15px_rgba(1,205,254,0.5)]">
+        {/* Left Sidebar */}
+        <div className="relative w-80 h-full flex flex-col items-start justify-between gap-6 sticky top-8">
+          <div className="relative w-full h-fit flex flex-col gap-6">
+            <div className="relative w-fit h-fit flex text-xl font-pixel text-[var(--neon-pink)] neon-text">
               Memes as culture and currency
             </div>
             <div className="relative w-full h-fit flex">
               <div
-                className={`relative px-3 py-1 flex items-center justify-center text-black w-full h-8 cursor-pointer active:scale-95`}
+                className={`relative px-6 py-3 flex items-center justify-center text-white w-full h-14 cursor-pointer active:scale-95 transition-all duration-200 retro-button rounded-xl hover:shadow-[0_0_20px_rgba(255,113,206,0.5)]`}
                 onClick={() =>
                   setScreenSwitch(screenSwitch < 3 ? screenSwitch + 1 : 0)
                 }
               >
-                <div className="absolute top-0 left-0 flex w-full h-8">
-                  <Image
-                    src={`${INFURA_GATEWAY}QmRU57vbmZm7EbKrJksFD6SfyLkZ2qUwfZHqXzy8XJvZAH`}
-                    layout="fill"
-                    objectFit="fill"
-                    draggable={false}
-                  />
-                </div>
-                <div className="relative flex w-fit h-fit font-digi">
+                <div className="relative flex w-fit h-fit font-pixel text-base">
                   {screenSwitch == 1
                     ? "<- Create Memes ->"
                     : screenSwitch == 2
@@ -89,345 +82,123 @@ const Memes: FunctionComponent<MemesProps> = ({
               </div>
             </div>
           </div>
-          <div className="relative w-full h-fit overflow-y-scroll flex flex-col gap-3">
-            <div className="relative w-full h-fit flex flex-col gap-1.5">
-              <div className="relative w-fit h-fit flex text-sm text-left">
+          <div className="relative w-full h-fit overflow-y-scroll flex flex-col gap-6">
+            <div className="relative w-full h-fit flex flex-col gap-3">
+              <div className="relative w-fit h-fit flex text-lg font-pixel text-[var(--neon-green)] neon-text">
                 VIDEO MEME LIQUIDITY
               </div>
-              <div className="relative w-fit h-fit flex text-xxs text-left">
+              <div className="relative w-fit h-fit flex text-base text-[var(--neon-blue)]">
                 supplied by creators like you
               </div>
             </div>
-            <div className="relative w-full h-56 flex items-start overflow-y-scroll">
-              <div className="relative items-start justify-start flex w-full h-fit flex-col gap-2">
+            <div className="relative w-full max-h-[calc(100vh-20rem)] flex items-start overflow-y-scroll custom-scrollbar pr-4">
+              <div className="relative items-start justify-start flex w-full h-fit flex-col gap-4">
                 {(videoTokens?.length < 1
                   ? Array.from({ length: 28 })
                   : videoTokens
-                )?.map((token, key) => {
+                )?.map((token: TokenData | undefined, index: number) => {
                   return (
-                    <>
-                      {(token as any)?.token ? (
-                        <div
-                          key={key}
-                          className={`relative w-full h-10 rounded-md flex border flex-row items-center justify-between cursor-pointer p-1 border-sea bg-gris/70`}
-                          onClick={() =>
-                            window.open(
-                              `https://block-explorer.testnet.lens.dev/address/${
-                                (token as TokenData)?.token
-                              }`
+                    <div
+                      key={index}
+                      className="relative w-full h-fit flex cursor-pointer hover:opacity-80 active:scale-95"
+                      onClick={() =>
+                        !token?.id
+                          ? {}
+                          : setChosenUserMeme(
+                              chosenUserMeme?.id === token?.id ? undefined : token
                             )
-                          }
-                        >
-                          <div className="relative w-fit h-fit flex items-center justify-center">
-                            {(token as TokenData)?.name}
+                      }
+                    >
+                      <div
+                        className={`relative w-full h-14 flex items-center justify-center rounded-xl border-2 ${
+                          token?.id === chosenUserMeme?.id
+                            ? "border-[var(--neon-pink)] shadow-[0_0_15px_rgba(255,113,206,0.5)]"
+                            : "border-[var(--neon-blue)]"
+                        } bg-black/40 p-3`}
+                      >
+                        <div className="relative w-full h-fit flex items-center justify-between text-white font-pixel text-sm">
+                          <div className="relative w-fit h-fit flex items-center justify-center gap-3">
+                            <div
+                              className="relative w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center"
+                              title={token?.name || "Loading..."}
+                            >
+                              {token?.metadata?.image && (
+                                <Image
+                                  src={`${INFURA_GATEWAY}${
+                                    token?.metadata?.image?.split("ipfs://")?.[1]
+                                  }`}
+                                  draggable={false}
+                                  layout="fill"
+                                  objectFit="cover"
+                                  className="rounded-lg"
+                                />
+                              )}
+                            </div>
+                            <div className="relative w-fit h-fit flex items-center justify-center">
+                              {token?.symbol || "..."}
+                            </div>
                           </div>
-                          <div className="relative w-8 rounded-full h-8 border border-black flex items-center justify-center bg-viol">
-                            <Image
-                              draggable={false}
-                              className="rounded-full"
-                              objectFit="cover"
-                              layout="fill"
-                              src={`${INFURA_GATEWAY}${
-                                (token as TokenData)?.image?.split(
-                                  "ipfs://"
-                                )?.[1]
-                              }`}
-                            />
+                          <div className="relative w-fit h-fit flex items-center justify-center text-[var(--neon-green)]">
+                            {token?.totalSupply
+                              ? Number(token?.totalSupply) / 10 ** 18
+                              : "0"}
                           </div>
                         </div>
-                      ) : (
-                        <div
-                          key={key}
-                          className={`relative w-full h-10 rounded-md flex border border-sea bg-gris/70 animate-pulse`}
-                        ></div>
-                      )}
-                    </>
+                      </div>
+                    </div>
                   );
                 })}
               </div>
             </div>
           </div>
         </div>
-        {screenSwitch == 0 ? (
-          <div className="relative w-full h-full flex flex-col items-center justify-start border border-sea rounded-md bg-gris/70 p-2 gap-3">
-            <div className="relative w-full h-full flex items-center justify-start flex-col gap-3">
-              <div className="relative w-fit h-fit flex items-center justify-center text-center text-sm">
-                TODAY'S TOP MEMES IN OMNIPredict
-              </div>
-              <div className="relative w-full h-[22rem] max-h-full overflow-y-scroll flex">
-                <div className="relative items-start justify-between flex w-full h-fit flex-wrap gap-4">
-                  {(memesLoading || memeData?.length < 1
-                    ? Array.from({ length: 28 })
-                    : memeData
-                  )?.map((meme, key) => {
-                    return (
-                      <>
-                        {(meme as MemeData)?.symbol ? (
-                          <div
-                            key={key}
-                            className={`relative w-20 h-20 rounded-md flex border border-sea bg-viol ${
-                              !postMemeLoading &&
-                              "cursor-pointer hover:opacity-70"
-                            } ${
-                              memeSelected?.name == (meme as MemeData)?.name &&
-                              "opacity-50"
-                            }`}
-                            onClick={() =>
-                              !postMemeLoading &&
-                              setMemeSelected(meme as MemeData)
-                            }
-                          >
-                            <Image
-                              draggable={false}
-                              className="rounded-md"
-                              objectFit="cover"
-                              layout="fill"
-                              src={`${INFURA_GATEWAY}${
-                                (meme as MemeData)?.metadata?.image?.split(
-                                  "ipfs://"
-                                )?.[1]
-                              }`}
-                            />
-                          </div>
-                        ) : (
-                          <div
-                            key={key}
-                            className={`relative w-20 h-20 rounded-md flex border border-sea bg-viol animate-pulse`}
-                          ></div>
-                        )}
-                      </>
-                    );
-                  })}
-                </div>
-              </div>
+
+        {/* Main Content */}
+        <div className="relative flex-grow h-full flex flex-col gap-8">
+          <div className="relative w-full h-fit flex items-center justify-between">
+            <div className="text-2xl font-pixel text-[var(--neon-pink)] neon-text">
+              Today's Top Memes
             </div>
-            <div className="relative w-full h-full flex items-start justify-between flex-col gap-3">
-              <div className="relative w-full h-full flex items-start justify-between flex-col gap-3">
-                <textarea
-                  className="focus:outline-none flex relative w-full h-full border text-sm border-sea rounded-md p-1 bg-gris/80"
-                  style={{
-                    resize: "none",
-                  }}
-                  placeholder="Add a note?"
-                  value={postContent}
-                  disabled={postMemeLoading}
-                  onChange={(e) => setPostContent(e.target.value)}
-                />
-                <div
-                  className={`relative px-3 py-1 flex items-center justify-center text-black w-28 h-8 cursor-pointer active:scale-95`}
-                  onClick={() =>
-                    !postMemeLoading &&
-                    memeSelected?.metadata?.image &&
-                    handlePostMeme()
-                  }
-                >
-                  <div className="absolute top-0 left-0 flex w-28 h-8">
-                    <Image
-                      src={`${INFURA_GATEWAY}QmRU57vbmZm7EbKrJksFD6SfyLkZ2qUwfZHqXzy8XJvZAH`}
-                      layout="fill"
-                      objectFit="fill"
-                      draggable={false}
-                    />
-                  </div>
-                  {postMemeLoading ? (
-                    <div className="relative w-4 h-4 animate-spin flex">
-                      <Image
-                        layout="fill"
-                        objectFit="cover"
-                        draggable={false}
-                        src={`${INFURA_GATEWAY}QmNcoHPaFjhDciiHjiMNpfTbzwnJwKEZHhNfziFeQrqTkX`}
-                      />
-                    </div>
-                  ) : (
-                    <div className="relative flex w-fit h-fit font-digi">
-                      Share Meme
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+            <button 
+              className="retro-button px-6 py-3 rounded-xl text-base font-pixel"
+              onClick={() => handleCreateMeme()}
+            >
+              CREATE NEW MEME
+            </button>
           </div>
-        ) : screenSwitch == 1 ? (
-          <div className="relative w-full h-full flex flex-col items-center justify-start border border-sea rounded-md bg-gris/70 p-2 gap-3">
-            <div className="relative w-full h-full flex items-start justify-between flex-col gap-3">
-              <div className="relative w-full h-fit flex items-start justify-between flex-row gap-3">
-                <div className="relative w-full h-fit flex">
-                  <input
-                    className="relative w-full h-8 flex rounded-md bg-gris border border-sea text-sm p-1"
-                    placeholder={"Meme Token Name"}
-                    disabled={createMemeLoading}
-                    value={newMeme?.memeTokenTitle}
-                    onChange={(e) =>
-                      setNewMeme({
-                        ...newMeme,
-                        memeTokenTitle: e?.target?.value,
-                      })
-                    }
+
+          {/* Meme Grid */}
+          <div className="relative w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+            {memeData?.map((meme, index) => (
+              <div
+                key={index}
+                className="relative aspect-square rounded-xl overflow-hidden retro-card group cursor-pointer transform hover:-translate-y-2 transition-all duration-300"
+                onClick={() => setMemeSelected(meme)}
+              >
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
+                {meme?.metadata?.image && (
+                  <Image
+                    src={`${INFURA_GATEWAY}${meme?.metadata?.image?.split("ipfs://")?.[1]}`}
+                    layout="fill"
+                    objectFit="cover"
+                    alt={meme?.name || "Meme"}
+                    className="group-hover:scale-110 transition-transform duration-300"
                   />
-                </div>
-                <div className="relative w-full h-fit flex">
-                  <input
-                    className="relative w-full h-8 flex rounded-md bg-gris border border-sea text-sm p-1"
-                    placeholder={"Meme Token Symbol"}
-                    disabled={createMemeLoading}
-                    value={newMeme?.memeTokenSymbol}
-                    onChange={(e) =>
-                      setNewMeme({
-                        ...newMeme,
-                        memeTokenSymbol: e?.target?.value,
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="relative w-full h-fit flex items-start justify-between flex-row gap-3">
-                <div className="relative w-full h-fit flex flex-col gap-1">
-                  <div className="relative w-fit h-fit flex text-xs">
-                    Initial Supply
-                  </div>
-                  <input
-                    className="relative w-full h-8 flex rounded-md bg-gris border border-sea text-sm p-1"
-                    placeholder={"Initial Supply"}
-                    disabled={createMemeLoading}
-                    type="number"
-                    step={1}
-                    min={0}
-                    value={newMeme?.initialSupply}
-                    onChange={(e) =>
-                      setNewMeme({
-                        ...newMeme,
-                        initialSupply: Number(e?.target?.value),
-                      })
-                    }
-                  />
-                </div>
-                <div className="relative w-full h-fit flex flex-col gap-1">
-                  <div className="relative w-fit h-fit flex text-xs">
-                    Max Supply
-                  </div>
-                  <input
-                    className="relative w-full h-8 flex rounded-md bg-gris border border-sea text-sm p-1"
-                    placeholder={"Max Supply"}
-                    disabled={createMemeLoading}
-                    type="number"
-                    step={1}
-                    min={0}
-                    value={newMeme?.maxSupply}
-                    onChange={(e) =>
-                      setNewMeme({
-                        ...newMeme,
-                        maxSupply: Number(e?.target?.value),
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="relative w-full h-fit flex flex-row gap-2 justify-between items-center">
-                <textarea
-                  className="focus:outline-none flex relative w-full h-40 border text-sm border-sea rounded-md p-1 bg-gris/80"
-                  style={{
-                    resize: "none",
-                  }}
-                  placeholder="Tell us more about the lore..."
-                  value={newMeme?.memeTokenLore}
-                  disabled={createMemeLoading}
-                  onChange={(e) =>
-                    setNewMeme({
-                      ...newMeme,
-                      memeTokenLore: e?.target?.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="relative flex w-full h-full flex-col gap-1 items-start justify-start">
-                <div className="relative w-fit h-fit text-black text-xs">
-                  Origin Meme
-                </div>
-                <label className="relative cursor-pointer h-full w-full rounded-md border border-sea flex">
-                  {newMeme?.memeImage && (
-                    <Image
-                      src={URL.createObjectURL(newMeme.memeImage)}
-                      objectFit="cover"
-                      layout="fill"
-                      draggable={false}
-                      className="rounded-md"
-                    />
-                  )}
-                  <input
-                    type="file"
-                    accept="image/png,image/jpeg"
-                    hidden
-                    required
-                    id="files"
-                    multiple={false}
-                    name="pfp"
-                    disabled={createMemeLoading}
-                    onChange={(e) => {
-                      e.stopPropagation();
-                      if (!e.target.files || e.target.files.length === 0)
-                        return;
-                      setNewMeme({
-                        ...newMeme,
-                        memeImage: e?.target?.files?.[0],
-                      });
-                    }}
-                  />
-                </label>
-              </div>
-              <div className="relative w-fit h-fit text-black text-xs">
-                Create your custom feed and then meme!
-              </div>
-              <div className="relative w-fit h-fit flex">
-                <div
-                  className={`relative px-3 py-1 flex items-center justify-center text-black w-28 h-7 cursor-pointer active:scale-95`}
-                  onClick={() =>
-                    !createMemeLoading &&
-                    (feed ? handleCreateMeme() : handleCreateFeed())
-                  }
-                >
-                  <div className="absolute top-0 left-0 flex w-28 h-7">
-                    <Image
-                      src={`${INFURA_GATEWAY}QmRU57vbmZm7EbKrJksFD6SfyLkZ2qUwfZHqXzy8XJvZAH`}
-                      layout="fill"
-                      objectFit="fill"
-                      draggable={false}
-                    />
-                  </div>
-                  {createMemeLoading ? (
-                    <div className="relative w-4 h-4 animate-spin flex">
-                      <Image
-                        layout="fill"
-                        objectFit="cover"
-                        draggable={false}
-                        src={`${INFURA_GATEWAY}QmNcoHPaFjhDciiHjiMNpfTbzwnJwKEZHhNfziFeQrqTkX`}
-                      />
+                )}
+                <div className="absolute bottom-0 left-0 w-full p-4">
+                  <div className="flex flex-col gap-2">
+                    <div className="text-lg font-pixel text-white truncate neon-text">
+                      {meme?.name}
                     </div>
-                  ) : (
-                    <div className="relative flex w-fit h-fit font-digi">
-                      {!feed ? "Create Feed" : "Create Meme"}
+                    <div className="text-sm font-mono text-[var(--neon-green)]">
+                      {meme?.symbol}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
-        ) : screenSwitch == 2 ? (
-          <div className="relative w-full h-full flex items-start justify-start border border-sea rounded-md bg-gris/70 p-2">
-            {userMemes?.length < 1 ? (
-              <div className="relative w-full h-full text-sm flex items-center justify-center">
-                No memes here yet, start by creating one?
-              </div>
-            ) : (
-              <Workflows
-                chosenUserMeme={chosenUserMeme}
-                setChosenUserMeme={setChosenUserMeme}
-                userMemes={userMemes}
-              />
-            )}
-          </div>
-        ) : (
-          <MemeFeed memeData={memeData} setScreen={setScreen} />
-        )}
+        </div>
       </div>
     </div>
   );

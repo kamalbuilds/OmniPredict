@@ -41,8 +41,10 @@ export default function RootLayout({
     <html>
       <body>
         <Providers>
-          {children}
-          <Modals />
+          <div className="min-w-[90vw] mx-auto px-8">
+            {children}
+            <Modals />
+          </div>
         </Providers>
       </body>
     </html>

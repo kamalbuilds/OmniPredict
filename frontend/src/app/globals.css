@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --neon-pink: #ff71ce;
+  --neon-blue: #01cdfe;
+  --neon-green: #05ffa1;
+  --dark-purple: #1a0f2e;
+  --retro-gradient: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+}
+
 @font-face {
   font-family: "Perfect";
   src: url("/fonts/Perfect.woff2");
@@ -12,18 +20,89 @@
   src: url("/fonts/Digi.ttf");
 }
 
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+}
+
 ::-webkit-scrollbar {
   display: none;
 }
 
 html {
-  font-family: "Perfect";
-  background: url("https://i.scdn.co/image/ab67616d00001e02b3a9162405118225ef8a013d");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-attachment: fixed;
-  background-color: #EDC6FF;
+  font-family: "Perfect", "Press Start 2P", monospace;
+  background: var(--dark-purple);
+  color: #fff;
+  position: relative;
+}
+
+/* CRT Effect */
+html::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 999;
+  animation: flicker 0.15s infinite;
+  opacity: 0.3;
+}
+
+@keyframes flicker {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.35; }
+}
+
+/* Neon Text Effect */
+.neon-text {
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px var(--neon-pink);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 10px var(--neon-pink); }
+  to { text-shadow: 0 0 20px var(--neon-pink), 0 0 30px var(--neon-pink); }
+}
+
+/* Retro Card Effect */
+.retro-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--neon-blue);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.retro-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px var(--neon-blue);
+}
+
+/* Retro Button Effect */
+.retro-button {
+  background: var(--retro-gradient);
+  border: none;
+  padding: 0.5rem 1rem;
+  color: white;
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.8rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.retro-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px var(--neon-pink);
+}
+
+.retro-button:active {
+  transform: translateY(1px);
 }
 
 .ProseMirror:focus {
@@ -172,4 +251,27 @@ html {
 
 .infinite-scroll-component__outerdiv {
   width: 100%;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  display: block;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--neon-blue);
+  border-radius: 4px;
+  box-shadow: 0 0 10px var(--neon-blue);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-pink);
+  box-shadow: 0 0 10px var(--neon-pink);
 }

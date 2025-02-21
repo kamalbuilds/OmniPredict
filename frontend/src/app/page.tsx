@@ -231,7 +231,7 @@ export default function Home() {
         <div
           className={`relative  h-full flex items-start justify-start gap-4 ${
             !expand || (expand && screen !== SCREENS[1])
-              ? "w-full tablet:w-[40rem]"
+              ? "w-full tablet:w-[60rem]"
               : "w-full"
           }`}
         >

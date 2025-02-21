@@ -1,4 +1,9 @@
+import React from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { formatEther } from "viem";
+import { useToast } from "./ui/use-toast";
 import { useActiveAccount, useReadContract } from "thirdweb/react";
 import { contract } from "@/constants/contract";
 import { MarketProgress } from "./market-progress";
@@ -97,8 +102,22 @@ export function MarketCard({ index, filter }: MarketCardProps) {
         return null;
     }
 
+    const { toast } = useToast();
+    const hasEnded = Date.now() > Number(market?.endTime) * 1000;
+
+    const onTrade = () => {
+      if (hasEnded && !isResolved) {
+        toast({
+          title: "Market Ended",
+          description: "This market has ended and is awaiting resolution.",
+          variant: "destructive",
+        });
+        return;
+      }
+    };
+
     return (
-        <Card key={index} className="flex flex-col">
+        <Card key={index} className="retro-card w-full max-w-md p-4 space-y-4 backdrop-blur-sm bg-opacity-10">
             {isLoadingMarketData ? (
                 <MarketCardSkeleton />
             ) : (
@@ -141,6 +160,13 @@ export function MarketCard({ index, filter }: MarketCardProps) {
                                 sharesBalance={sharesBalance}
                             />
                         )}
+                        <Button
+                            onClick={onTrade}
+                            className="w-full retro-button"
+                            disabled={hasEnded && !isResolved}
+                        >
+                            {isResolved ? "View Results" : hasEnded ? "Awaiting Resolution" : "Trade"}
+                        </Button>
                     </CardFooter>
                 </>
             )}
