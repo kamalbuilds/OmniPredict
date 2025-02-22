@@ -1,4 +1,10 @@
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 import { useActiveAccount, useReadContract } from "thirdweb/react";
 import { contract } from "@/constants/contract";
 import { MarketProgress } from "./market-progress";
@@ -12,9 +18,16 @@ import { MarketSharesDisplay } from "./market-shares-display";
 // Props for the MarketCard component
 // index is the market id
 // filter is the filter to apply to the market
+
+interface MarketSource {
+  type: "TWITTER" | "TELEGRAM";
+  sourceId?: string;
+}
+
 interface MarketCardProps {
   index: number;
-  filter: 'active' | 'pending' | 'resolved';
+  filter: "active" | "pending" | "resolved";
+  getSourceIcon: (source?: MarketSource) => JSX.Element | null;
 }
 
 // Interface for the market data
@@ -35,19 +48,21 @@ interface SharesBalance {
   optionBShares: bigint;
 }
 
-export function MarketCard({ index, filter }: MarketCardProps) {
-    // Get the active account
-    const account = useActiveAccount();
+export function MarketCard({ index, filter, getSourceIcon }: MarketCardProps) {
+  // Get the active account
+  const account = useActiveAccount();
 
-    // Get the market data
-    const { data: marketData, isLoading: isLoadingMarketData } = useReadContract({
-        contract,
-        method: "function getMarketInfo(uint256 _marketId) view returns (string question, string optionA, string optionB, uint256 endTime, uint8 outcome, uint256 totalOptionAShares, uint256 totalOptionBShares, bool resolved)",
-        params: [BigInt(index)]
-    });
+  // Get the market data
+  const { data: marketData, isLoading: isLoadingMarketData } = useReadContract({
+    contract,
+    method:
+      "function getMarketInfo(uint256 _marketId) view returns (string question, string optionA, string optionB, uint256 endTime, uint8 outcome, uint256 totalOptionAShares, uint256 totalOptionBShares, bool resolved)",
+    params: [BigInt(index)],
+  });
 
-    // Parse the market data
-    const market: Market | undefined = marketData ? {
+  // Parse the market data
+  const market: Market | undefined = marketData
+    ? {
         question: marketData[0],
         optionA: marketData[1],
         optionB: marketData[2],
@@ -55,95 +70,96 @@ export function MarketCard({ index, filter }: MarketCardProps) {
         outcome: marketData[4],
         totalOptionAShares: marketData[5],
         totalOptionBShares: marketData[6],
-        resolved: marketData[7]
-    } : undefined;
+        resolved: marketData[7],
+      }
+    : undefined;
 
-    // Get the shares balance
-    const { data: sharesBalanceData } = useReadContract({
-        contract,
-        method: "function getSharesBalance(uint256 _marketId, address _user) view returns (uint256 optionAShares, uint256 optionBShares)",
-        params: [BigInt(index), account?.address as string]
-    });
+  // Get the shares balance
+  const { data: sharesBalanceData } = useReadContract({
+    contract,
+    method:
+      "function getSharesBalance(uint256 _marketId, address _user) view returns (uint256 optionAShares, uint256 optionBShares)",
+    params: [BigInt(index), account?.address as string],
+  });
 
-    // Parse the shares balance
-    const sharesBalance: SharesBalance | undefined = sharesBalanceData ? {
+  // Parse the shares balance
+  const sharesBalance: SharesBalance | undefined = sharesBalanceData
+    ? {
         optionAShares: sharesBalanceData[0],
-        optionBShares: sharesBalanceData[1]
-    } : undefined;
+        optionBShares: sharesBalanceData[1],
+      }
+    : undefined;
 
-    // Check if the market is expired
-    const isExpired = new Date(Number(market?.endTime) * 1000) < new Date();
-    // Check if the market is resolved
-    const isResolved = market?.resolved;
+  // Check if the market is expired
+  const isExpired = new Date(Number(market?.endTime) * 1000) < new Date();
+  // Check if the market is resolved
+  const isResolved = market?.resolved;
 
-    // Check if the market should be shown
-    const shouldShow = () => {
-        if (!market) return false;
-        
-        switch (filter) {
-            case 'active':
-                return !isExpired;
-            case 'pending':
-                return isExpired && !isResolved;
-            case 'resolved':
-                return isExpired && isResolved;
-            default:
-                return true;
-        }
-    };
+  // Check if the market should be shown
+  const shouldShow = () => {
+    if (!market) return false;
 
-    // If the market should not be shown, return null
-    if (!shouldShow()) {
-        return null;
+    switch (filter) {
+      case "active":
+        return !isExpired;
+      case "pending":
+        return isExpired && !isResolved;
+      case "resolved":
+        return isExpired && isResolved;
+      default:
+        return true;
     }
+  };
 
-    return (
-        <Card key={index} className="flex flex-col">
-            {isLoadingMarketData ? (
-                <MarketCardSkeleton />
-            ) : (
-                <>
-                    <CardHeader>
-                        {market && <MarketTime endTime={market.endTime} />}
-                        <CardTitle>{market?.question}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        {market && (
-                            <MarketProgress 
-                                optionA={market.optionA}
-                                optionB={market.optionB}
-                                totalOptionAShares={market.totalOptionAShares}
-                                totalOptionBShares={market.totalOptionBShares}
-                            />
-                        )}
-                        {new Date(Number(market?.endTime) * 1000) < new Date() ? (
-                            market?.resolved ? (
-                                <MarketResolved 
-                                    marketId={index}
-                                    outcome={market.outcome}
-                                    optionA={market.optionA}
-                                    optionB={market.optionB}
-                                />
-                            ) : (
-                                <MarketPending />
-                            )
-                        ) : (
-                            <MarketBuyInterface 
-                                marketId={index}
-                                market={market!}
-                            />
-                        )}
-                    </CardContent>
-                    <CardFooter>
-                        {market && sharesBalance && (
-                            <MarketSharesDisplay 
-                                market={market}
-                                sharesBalance={sharesBalance}
-                            />
-                        )}
-                    </CardFooter>
-                </>
+  // If the market should not be shown, return null
+  if (!shouldShow()) {
+    return null;
+  }
+
+  return (
+    <Card key={index} className="flex flex-col bg-gray-300">
+      {isLoadingMarketData ? (
+        <MarketCardSkeleton />
+      ) : (
+        <>
+          <CardHeader>
+            {market && <MarketTime endTime={market.endTime} />}
+            <CardTitle>{market?.question}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {market && (
+              <MarketProgress
+                optionA={market.optionA}
+                optionB={market.optionB}
+                totalOptionAShares={market.totalOptionAShares}
+                totalOptionBShares={market.totalOptionBShares}
+              />
             )}
-        </Card>
-    )
+            {new Date(Number(market?.endTime) * 1000) < new Date() ? (
+              market?.resolved ? (
+                <MarketResolved
+                  marketId={index}
+                  outcome={market.outcome}
+                  optionA={market.optionA}
+                  optionB={market.optionB}
+                />
+              ) : (
+                <MarketPending />
+              )
+            ) : (
+              <MarketBuyInterface marketId={index} market={market!} />
+            )}
+          </CardContent>
+          <CardFooter>
+            {market && sharesBalance && (
+              <MarketSharesDisplay
+                market={market}
+                sharesBalance={sharesBalance}
+              />
+            )}
+          </CardFooter>
+        </>
+      )}
+    </Card>
+  );
 }

@@ -3,10 +3,8 @@
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Livepeer } from "livepeer";
-import { WagmiProvider, http } from "wagmi";
-import { getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { WagmiProvider } from "wagmi";
 import { createContext, SetStateAction, useEffect, useState } from "react";
-import { chains } from "@lens-network/sdk/viem";
 import { Post, PublicClient, testnet } from "@lens-protocol/client";
 import {
   StorageClient,
@@ -19,16 +17,7 @@ import {
 import { EditorType } from "@/components/Feed/types/feed.types";
 import { AccessControlParams } from "@livepeer/react";
 import { ThirdwebProvider } from "thirdweb/react";
-
-export const config = getDefaultConfig({
-  appName: "OmniPredict",
-  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string,
-  chains: [chains.testnet],
-  transports: {
-    [chains.testnet.id]: http("https://rpc.testnet.lens.dev"),
-  },
-  ssr: true,
-});
+import { wagmiConfig } from "@/constants/wagmi.config";
 
 const queryClient = new QueryClient();
 
@@ -163,41 +152,41 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <ThirdwebProvider>
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
-          <AppContext.Provider
-            value={{
-              imageView,
-              setImageView,
-              lensAccount,
-              postLive,
-              setPostLive,
-              setLensAccount,
-              lensClient,
-              storageClient,
-              indexer,
-              setIndexer,
-              notification,
-              setNotification,
-              createAccount,
-              setCreateAccount,
-              currentSession,
-              setCurrentSession,
-              gifOpen,
-              setGifOpen,
-              signless,
-              setSignless,
-              aiDetails,
-              setAiDetails,
-              livepeer,
-            }}
-          >
-            {children}
-          </AppContext.Provider>
-        </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+      <WagmiProvider config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          <RainbowKitProvider>
+            <AppContext.Provider
+              value={{
+                imageView,
+                setImageView,
+                lensAccount,
+                postLive,
+                setPostLive,
+                setLensAccount,
+                lensClient,
+                storageClient,
+                indexer,
+                setIndexer,
+                notification,
+                setNotification,
+                createAccount,
+                setCreateAccount,
+                currentSession,
+                setCurrentSession,
+                gifOpen,
+                setGifOpen,
+                signless,
+                setSignless,
+                aiDetails,
+                setAiDetails,
+                livepeer,
+              }}
+            >
+              {children}
+            </AppContext.Provider>
+          </RainbowKitProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
     </ThirdwebProvider>
   );
 }
