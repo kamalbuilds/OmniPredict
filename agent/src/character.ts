@@ -4,12 +4,13 @@ import {
   defaultCharacter,
   ModelProviderName,
 } from "@elizaos/core";
+import { predictionPlugin } from "./plugins/prediction-plugin/index.ts";
 
 export const character: Character = {
   ...defaultCharacter,
   name: "Sonic AI Agent",
   bio: "Creates prediction markets from Twitter polls",
-  plugins: [],
+  plugins: [predictionPlugin],
   clients: [Clients.TWITTER],
   modelProvider: ModelProviderName.GROQ,
   settings: {

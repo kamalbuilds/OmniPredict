@@ -2,7 +2,7 @@ import { Character, Plugin } from "@elizaos/core";
 import { TwitterApi } from "twitter-api-v2";
 import { ethers } from "ethers";
 import {
-  PREDICTION_MARKET_ABI,
+  PredictionMarketABI,
   PREDICTION_MARKET_CONTRACT_ADDRESS,
 } from "../predictionContract/predictionmarket.contract";
 
@@ -76,7 +76,7 @@ export class TwitterPollTrackerPlugin implements Plugin {
 
       this.predictionMarket = new ethers.Contract(
         PREDICTION_MARKET_CONTRACT_ADDRESS,
-        PREDICTION_MARKET_ABI,
+        PredictionMarketABI,
         this.wallet
       );
     } catch (error) {

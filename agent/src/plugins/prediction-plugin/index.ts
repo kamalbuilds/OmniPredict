@@ -1,5 +1,5 @@
 import type { Plugin } from "@elizaos/core";
-import { createPrediction } from "./actions/createPrediction.ts";
+import { createPrediction } from "./actions/createPrediction.js";
 
 //export * from "./actions/bridge";
 // export * from "./actions/submitData";
@@ -10,9 +10,9 @@ import { createPrediction } from "./actions/createPrediction.ts";
 // import transfer from "./actions/transfer";
 // import submitData from "./actions/submitData";
 
-export const pluginPrediciton: Plugin = {
-  name: "prediciton",
-  description: "Prediction Market plugin",
+export const predictionPlugin: Plugin = {
+  name: "prediction",
+  description: "Creates prediction markets for betting on future outcomes",
   providers: [],
   evaluators: [],
   services: [],
