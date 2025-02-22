@@ -17,17 +17,13 @@ import { validatePredictionConfig } from "../environment.js";
 
 export interface DataContent extends Content {
     data: string;
-  }
-  
-  export function isDataContent(content: DataContent): content is DataContent {
-    // Validate types
-    const validTypes = typeof content.data === "string";
-    if (!validTypes) {
-      return false;
-    }
-  }
-  
-  const submitDataTemplate = `Respond with a JSON markdown block containing only the extracted values. Use null for any values that cannot be determined.
+}
+
+export function isDataContent(content: DataContent): content is DataContent {
+    return typeof content.data === "string";
+}
+
+const submitDataTemplate = `Respond with a JSON markdown block containing only the extracted values. Use null for any values that cannot be determined.
     
 Example response:
 \`\`\`json
@@ -35,7 +31,10 @@ Example response:
     "_question": "Prediction question which will be created on which users can bet with option A and Option B",
     "_optionA": "Option A for the prediction",
     "_optionB": "Option B for the prediction",
-    "_duration": "Duration of the market in days"
+    "_duration": "Duration of the market in days",
+    "_category": "Category of the market (SOCIAL, CRYPTO, SPORTS)",
+    "_tags": ["tag1", "tag2"],
+    "_marketFee": 100
 }
 \`\`\`
 
@@ -46,6 +45,9 @@ Given the recent messages, extract the following information about the predictio
 - Option A: First option (e.g., "Yes", "India", etc.)
 - Option B: Second option (e.g., "No", "Pakistan", etc.)
 - Duration: Duration in days (if betting duration is mentioned, use that, otherwise default to 7 days)
+- Category: Market category (default to "SOCIAL" if not specified)
+- Tags: Array of relevant tags (default to empty array if not specified)
+- Market Fee: Fee in basis points, 100 = 1% (default to 100 if not specified)
 
 If any required fields are missing from the messages, ask the user directly for those values.
 
@@ -106,6 +108,11 @@ export const createPrediction = {
                 return false;
             }
 
+            // Set default values for optional parameters
+            const category = content._category || "social";
+            const tags = content._tags || [];
+            const marketFee = content._marketFee || 100; // Default 1%
+
             elizaLogger.log("Checking environment variables...");
             const PRIVATE_KEY = runtime.getSetting("PRIVATE_KEY");
             if (!PRIVATE_KEY) throw new Error("PRIVATE_KEY not set");
@@ -143,15 +150,21 @@ export const createPrediction = {
                 optionA: content._optionA,
                 optionB: content._optionB,
                 duration: durationInSeconds,
+                category,
+                tags,
+                marketFee
             });
 
-            // Create the market
+            // Create the market with all required parameters
             elizaLogger.log("Creating market transaction...");
             const tx = await predictionMarket.createMarket(
                 content._question,
                 content._optionA,
                 content._optionB,
-                durationInSeconds
+                durationInSeconds,
+                category,
+                tags,
+                marketFee
             );
             elizaLogger.log("Transaction sent:", tx.hash);
 
@@ -169,6 +182,15 @@ export const createPrediction = {
                     content: {
                         marketId,
                         txHash: receipt.transactionHash,
+                        parameters: {
+                            question: content._question,
+                            optionA: content._optionA,
+                            optionB: content._optionB,
+                            duration: durationInSeconds,
+                            category,
+                            tags,
+                            marketFee
+                        }
                     },
                 });
             }
@@ -200,13 +222,13 @@ export const createPrediction = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "Create a prediction market for 'Will Bitcoin reach $100k by end of 2024?' with options Yes/No, duration 30 days",
+                    text: "Create a prediction market for 'Will Bitcoin reach $100k by end of 2024?' with options Yes/No, duration 30 days, category CRYPTO",
                 },
             },
             {
                 user: "{{agent}}",
                 content: {
-                    text: "Creating market with question: Will Bitcoin reach $100k by end of 2024?, options: Yes/No, duration: 30 days",
+                    text: "Creating market with question: Will Bitcoin reach $100k by end of 2024?, options: Yes/No, duration: 30 days, category: CRYPTO",
                     action: "CREATE_PREDICTION",
                 },
             },
