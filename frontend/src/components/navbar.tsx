@@ -1,7 +1,7 @@
 import { ConnectButton, lightTheme, useActiveAccount } from "thirdweb/react";
 import { client } from "@/client";
-import { baseSepolia } from "thirdweb/chains";
-import { inAppWallet } from "thirdweb/wallets";
+import { baseSepolia, defineChain  } from "thirdweb/chains";
+import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -11,6 +11,20 @@ export function Navbar() {
     const account = useActiveAccount();
     const [isClaimLoading, setIsClaimLoading] = useState(false);
     const { toast } = useToast();
+
+    const sonicblazetestnet = defineChain({
+        id: 57054,
+        name: "Sonic Blaze Testnet",
+        nativeCurrency: { name: "Sonic", symbol: "S", decimals: 18 },
+        blockExplorers: [
+          {
+            name: "BlazeScan",
+            url: "https://blaze.soniclabs.com",
+          },
+        ],
+        rpc: "https://rpc.ankr.com/sonic_blaze_testnet",
+        testnet: true,
+      });
 
     const handleClaimTokens = async () => {
         setIsClaimLoading(true);
@@ -64,7 +78,7 @@ export function Navbar() {
                 <ConnectButton 
                     client={client} 
                     theme={lightTheme()}
-                    chain={baseSepolia}
+                    chain={sonicblazetestnet}
                     connectButton={{
                         style: {
                             fontSize: '0.75rem !important',
@@ -74,16 +88,17 @@ export function Navbar() {
                     }}
                     detailsButton={{
                         displayBalanceToken: {
-                            [baseSepolia.id]: "0x4D9604603527322F44c318FB984ED9b5A9Ce9f71"
+                            [sonicblazetestnet.id]: "0x4D9604603527322F44c318FB984ED9b5A9Ce9f71"
                         }
                     }}
                     wallets={[
                         inAppWallet(),
+                        createWallet("io.metamask"),
                     ]}
-                    accountAbstraction={{
-                        chain: baseSepolia,
-                        sponsorGas: true,
-                    }}
+                    // accountAbstraction={{
+                    //     chain: sonicblazetestnet,
+                    //     sponsorGas: true,
+                    // }}
                 />
             </div>
         </div>
