@@ -110,7 +110,7 @@ export const createPrediction = {
             const PRIVATE_KEY = runtime.getSetting("PRIVATE_KEY");
             if (!PRIVATE_KEY) throw new Error("PRIVATE_KEY not set");
 
-            const CHAIN_RPC_URL = process.env.CHAIN_RPC_URL;
+            const CHAIN_RPC_URL = runtime.getSetting("CHAIN_RPC_URL") || process.env.CHAIN_RPC_URL;
             if (!CHAIN_RPC_URL) throw new Error("CHAIN_RPC_URL not set");
 
             const PREDICTION_MARKET_ADDRESS = runtime.getSetting("PREDICTION_MARKET_ADDRESS") || process.env.PREDICTION_MARKET_ADDRESS;
