@@ -10,7 +10,7 @@ export const character: Character = {
   name: "Sonic AI Agent",
   bio: "Creates prediction markets from Twitter polls",
   plugins: [],
-  clients: [Clients.TELEGRAM],
+  clients: [Clients.TWITTER],
   modelProvider: ModelProviderName.GROQ,
   settings: {
     secrets: {},
