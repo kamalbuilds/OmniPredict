@@ -137,10 +137,9 @@ const useUpdateAccount = (
         });
         const json = await res.json();
 
-        const { uri } = await storageClient.uploadAsJson({
-          type: "image/png",
-          item: "ipfs://" + json?.cid,
-        });
+        const imageBlob = new Blob([JSON.stringify({ type: "image/png", item: "ipfs://" + json?.cid })], { type: "application/json" });
+        const imageFile = new File([imageBlob], "image.json", { type: "application/json" });
+        const { uri } = await storageClient.uploadFile(imageFile);
 
         picture = {
           picture: uri,
@@ -154,17 +153,16 @@ const useUpdateAccount = (
         });
         const json = await res.json();
 
-        const { uri } = await storageClient.uploadAsJson({
-          type: "image/png",
-          item: "ipfs://" + json?.cid,
-        });
+        const coverBlob = new Blob([JSON.stringify({ type: "image/png", item: "ipfs://" + json?.cid })], { type: "application/json" });
+        const coverFile = new File([coverBlob], "cover.json", { type: "application/json" });
+        const { uri } = await storageClient.uploadFile(coverFile);
 
         cover = {
           cover: uri,
         };
       }
 
-      const { uri } = await storageClient.uploadAsJson({
+      const metadataBlob = new Blob([JSON.stringify({
         $schema: "https://json-schemas.lens.dev/account/1.0.0.json",
         lens: {
           id: uuidv4(),
@@ -172,8 +170,10 @@ const useUpdateAccount = (
           bio: updatedAccount?.bio,
           ...picture,
           ...cover,
-        },
-      });
+        }
+      })], { type: "application/json" });
+      const metadataFile = new File([metadataBlob], "metadata.json", { type: "application/json" });
+      const { uri } = await storageClient.uploadFile(metadataFile);
 
       const accountResponse = await updateAccount(
         {

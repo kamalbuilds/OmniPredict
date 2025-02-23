@@ -18,6 +18,7 @@ import Memes from "@/components/Memes/modules/Memes";
 import Memories from "@/components/Memories/modules/Memories";
 import Reach from "@/components/Reach/modules/Reach";
 import Feed from "@/components/Feed/modules/Feed";
+import { PredictionDashboard } from "@/components/PredictionDashboard/PredictionDashboard";
 
 const ScreenSwitch: FunctionComponent<ScreenSwitchProps> = ({
   screen,
@@ -353,6 +354,9 @@ const ScreenSwitch: FunctionComponent<ScreenSwitchProps> = ({
           </div>
         </div>
       );
+
+    case "Prediction":
+      return <PredictionDashboard />;
 
     default:
       return (

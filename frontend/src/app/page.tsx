@@ -11,6 +11,7 @@ import { useAccount } from "wagmi";
 import { AppContext } from "./providers";
 import { createPublicClient, http } from "viem";
 import { chains } from "@lens-network/sdk/viem";
+import { PredictionDashboard } from "@/components/PredictionDashboard/PredictionDashboard";
 
 export default function Home() {
   const router = useRouter();
@@ -49,10 +50,10 @@ export default function Home() {
   );
 
   return (
-    <div className="relative w-full flex h-screen items-start justify-between pt-4 px-4 gap-4 flex-col tablet:overflow-hidden">
-      <div className="relative w-full h-fit flex items-center justify-between gap-2 flex-row">
+    <div className="relative w-full flex h-screen items-start justify-between pt-4 px-2 tablet:px-0 gap-4 flex-col tablet:overflow-hidden">
+      <div className="relative w-full h-fit flex items-center justify-between gap-2 flex-row px-2 tablet:px-6">
         <div
-          className="relative w-fit h-fit flex text-white cursor-pointer text-2xl uppercase "
+          className="relative w-fit h-fit flex text-white cursor-pointer text-2xl uppercase"
           onClick={() => router.push("/")}
         >
           omnipredict
@@ -149,17 +150,13 @@ export default function Home() {
           )}
         </div>
       </div>
-      <div className="relative w-full h-[calc(100vh-80px)] justify-start items-center tablet:items-start tablet:justify-center flex flex-col tablet:flex-row gap-6">
-        <div
-          className={`relative h-fit tablet:h-full flex items-center tablet:items-start justify-between tablet:justify-center gap-8 flex-wrap tablet:flex-col ${
-            expand && screen === SCREENS[1] ? "w-fit" : "w-40 tablet:w-40"
-          } shrink-0`}
-        >
+      <div className="relative w-full h-[calc(100vh-80px)] flex flex-row items-start justify-center gap-10">
+        <div className="relative h-full flex-none flex items-start justify-start flex-col pl-2 tablet:pl-6 w-32 tablet:w-40">
           {SCREENS?.slice(0, -1).map((item, key) => {
             return (
               <div
                 key={key}
-                className={`relative items-center justify-center tablet:items-start tablet:justify-start w-fit h-fit flex flex-row gap-2.5 ${
+                className={`relative items-start justify-start w-full h-fit flex flex-row gap-2.5 mb-6 ${
                   item !== screen && "opacity-60"
                 }`}
               >
@@ -177,16 +174,16 @@ export default function Home() {
                     </div>
                   </div>
                 )}
-                <div className="relative w-full h-fit flex items-center justify-center tablet:items-start tablet:justify-start flex-col gap-1.5">
+                <div className="relative w-full h-fit flex items-start justify-start flex-col gap-1.5">
                   {(!expand || (expand && screen !== SCREENS[1])) && (
                     <div
-                      className="relative w-fit h-fit flex text-sm tablet:text-2xl cursor-pointer hover:opacity-70"
+                      className="relative w-fit h-fit flex text-sm tablet:text-xl cursor-pointer hover:opacity-70"
                       onClick={() => setScreen(item)}
                     >
-                      <div className="relative w-fit h-fit  text-white whitespace-nowrap text-center tablet:text-left uppercase">
+                      <div className="relative w-fit h-fit text-white whitespace-nowrap text-left uppercase">
                         {item?.title}
                       </div>
-                      <div className="absolute left-0.5 top-0.5 whitespace-nowrap text-center tablet:text-left top-0 w-fit h-fit  text-lemon uppercase">
+                      <div className="absolute left-0.5 top-0.5 whitespace-nowrap text-left w-fit h-fit text-lemon uppercase">
                         {item?.title}
                       </div>
                     </div>
@@ -205,7 +202,7 @@ export default function Home() {
                           alt="icon"
                         />
                       </div>
-                      <div className="hidden relative w-full h-20 tablet:flex overflow-y-scroll p-2 border border-sea rounded-lg bg-rose text-left  text-white text-xs">
+                      <div className="hidden relative w-full h-20 tablet:flex overflow-y-scroll p-2 border border-sea rounded-lg bg-rose text-left text-white text-xs">
                         {item?.description}
                       </div>
                     </>
@@ -228,35 +225,42 @@ export default function Home() {
             );
           })}
         </div>
-        <div
-          className={`relative  h-full flex items-start justify-start gap-4 ${
-            !expand || (expand && screen !== SCREENS[1])
-              ? "w-full tablet:w-[40rem]"
-              : "w-full"
-          }`}
-        >
-          <ScreenSwitch
-            gifOpen={context?.gifOpen!}
-            handleDecryptAiDetails={handleDecryptAiDetails}
-            decryptAiDetailsLoading={decryptAiDetailsLoading}
-            screen={screen}
-            setPostLive={context?.setPostLive!}
-            aiDetails={context?.aiDetails!}
-            expand={expand}
-            lensAccount={context?.lensAccount}
-            setExpand={setExpand}
-            setGifOpen={context?.setGifOpen!}
-            setImageView={context?.setImageView!}
-            lensClient={context?.lensClient!}
-            setScreen={setScreen}
-            currentSession={context?.currentSession!}
-            setCurrentSession={context?.setCurrentSession!}
-            setIndexer={context?.setIndexer!}
-            setNotification={context?.setNotification!}
-            setSignless={context?.setSignless!}
-            storageClient={context?.storageClient!}
-          />
+        <div className="relative h-full w-full max-w-[800px] flex flex-col items-center justify-start">
+          <div className="relative w-full h-full bg-white/5 rounded-xl backdrop-blur-sm border border-white/10 overflow-hidden">
+            <div className="relative w-full h-12 flex items-center justify-between px-4 border-b border-white/10">
+              <div className="text-white text-sm">
+                {screen?.title || "OmniPredict"}
+              </div>
+            </div>
+            
+            <div className="relative w-full h-[calc(100%-3rem)] overflow-y-auto">
+              <div className="relative w-full h-full p-4">
+                <ScreenSwitch
+                  gifOpen={context?.gifOpen!}
+                  handleDecryptAiDetails={handleDecryptAiDetails}
+                  decryptAiDetailsLoading={decryptAiDetailsLoading}
+                  screen={screen}
+                  setPostLive={context?.setPostLive!}
+                  aiDetails={context?.aiDetails!}
+                  expand={expand}
+                  lensAccount={context?.lensAccount}
+                  setExpand={setExpand}
+                  setGifOpen={context?.setGifOpen!}
+                  setImageView={context?.setImageView!}
+                  lensClient={context?.lensClient!}
+                  setScreen={setScreen}
+                  currentSession={context?.currentSession!}
+                  setCurrentSession={context?.setCurrentSession!}
+                  setIndexer={context?.setIndexer!}
+                  setNotification={context?.setNotification!}
+                  setSignless={context?.setSignless!}
+                  storageClient={context?.storageClient!}
+                />
+              </div>
+            </div>
+          </div>
         </div>
+        <div className="relative h-full flex-none w-32 tablet:w-40" />
       </div>
     </div>
   );

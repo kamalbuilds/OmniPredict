@@ -11,7 +11,7 @@
   "dependencies": {
     "@apollo/client": "^3.12.4",
     "@lens-network/sdk": "^0.0.0-canary-20241203140504",
-    "@lens-protocol/client": "^0.0.0-canary-20250107114415",
+    "@lens-protocol/client": "canary",
     "@lens-protocol/metadata": "^1.2.0",
     "@lens-protocol/storage-node-client": "^0.0.0-next-20241217195719",
     "@lens-protocol/wagmi": "^4.1.5",
@@ -30,6 +30,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "critters": "^0.0.25",
+    "encoding": "^0.1.13",
     "ethers": "^6.13.4",
     "livepeer": "^3.5.0",
     "lucide-react": "^0.475.0",
