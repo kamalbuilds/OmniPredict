@@ -6,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MarketCard } from "../marketCard";
 import { Navbar } from "../navbar";
 import { MarketCardSkeleton } from "../market-card-skeleton";
-import { Footer } from "../footer";
 import PredictionDashboardBanner from "./PredictionDashboardBanner";
 import { FaTelegram, FaTwitter } from "react-icons/fa";
 import { useState } from "react";
@@ -152,7 +151,6 @@ export function PredictionDashboard() {
           )}
         </Tabs>
       </div>
-      <Footer />
     </div>
   );
 }

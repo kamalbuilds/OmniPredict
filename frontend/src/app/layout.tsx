@@ -5,7 +5,7 @@ import Providers from "./providers";
 import { RootLayoutWrapper } from "@/components/RootLayoutWrapper";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.dialtone.club"),
+  metadataBase: new URL("https://omnipredict.vercel.app"),
   title: "OmniPredict",
   robots: {
     googleBot: {
@@ -14,21 +14,21 @@ export const metadata: Metadata = {
     },
   },
   description:
-    "A shortform self-publishing app. Building on Livepeer, Lens, Farcaster, Bluesky & custom agents for mirror inference.",
+    "An all in one CrossChain Social App built with Lens , Livepeer , Farcaster and lets you place predictions on sonic chain",
 
   twitter: {
     card: "summary_large_image",
     title: "OmniPredict",
     description:
-      "A shortform self-publishing app. Building on Livepeer, Lens, Farcaster, Bluesky & custom agents for mirror inference.",
-    images: ["https://www.dialtone.club/card.png/"],
+      "An all in one CrossChain Social App built with Lens , Livepeer , Farcaster and lets you place predictions on sonic chain",
+    images: ["https://omnipredict.vercel.app/card.png/"],
   },
 
   openGraph: {
     title: "OmniPredict",
     description:
-      "A shortform self-publishing app. Building on Livepeer, Lens, Farcaster, Bluesky & custom agents for mirror inference.",
-    images: "https://www.dialtone.club/cover.png/",
+      "An all in one CrossChain Social App built with Lens , Livepeer , Farcaster and lets you place predictions on sonic chain",
+    images: "https://omnipredict.vercel.app/cover.png/",
   },
 };
 
