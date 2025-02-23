@@ -2,7 +2,7 @@ import { Screen } from "@/components/Common/types/common.types";
 
 export const INFURA_GATEWAY: string = "https://thedial.infura-ipfs.io/ipfs/";
 export const IPFS_REGEX: RegExp = /\b(Qm[1-9A-Za-z]{44}|ba[A-Za-z2-7]{57})\b/;
-export const STORAGE_NODE: string = "https://storage-api.testnet.lens.dev";
+export const STORAGE_NODE = "https://api-v2-mumbai-live.lens.dev";
 
 
 export const COMFY_WORKFLOWS: string[] = [
@@ -40,6 +40,11 @@ export const SCREENS: Screen[] = [
     description:
       "The past returns when you need a refresher. And with it new content to share with friends and agent sessions.",
     title: "Memories",
+  },
+  {
+    description:
+      "Predict the future of the market with Sonic Prediction Market.",
+    title: "Prediction",
   },
   {
     title: "Account",
