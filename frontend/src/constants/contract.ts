@@ -1,6 +1,6 @@
 import { client } from "@/client";
 import { defineChain, getContract } from "thirdweb";
-
+import { PredictionMarketABI } from "../../abis/PredictionMarket";
 export const sonicblazetestnet = defineChain({
   id: 57054,
   name: "Sonic Blaze Testnet",
@@ -21,7 +21,7 @@ export const tokenAddress = "0x1602CF4fFa1da92d1708D74E5A9985593176171a";
 export const contract = getContract({
   client: client,
   chain: sonicblazetestnet,
-  address: contractAddress,
+  address: contractAddress
 });
 
 export const tokenContract = getContract({

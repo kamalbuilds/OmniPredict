@@ -132,6 +132,10 @@ export function MarketBuyInterface({
 
     setIsConfirming(true);
     try {
+      console.log("contract", contract);
+      console.log("marketId", marketId);
+      console.log("selectedOption", selectedOption, selectedOption === "A");
+      console.log("amount", amount);
       const tx = await prepareContractCall({
         contract,
         method:
