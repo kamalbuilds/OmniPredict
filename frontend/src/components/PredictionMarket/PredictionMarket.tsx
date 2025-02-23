@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { PredictionMarketABI } from "../../../abis/PredictionMarket";
