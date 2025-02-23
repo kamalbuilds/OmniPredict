@@ -19,7 +19,7 @@ const MetadataSwitch: FunctionComponent<MetadataSwitchProps> = ({
   switch (metadata) {
     case "VideoMetadata":
       return (
-        <div className="relative w-full h-full flex flex-col gap-2 items-start justify-start">
+        <div className="relative w-full h-full flex flex-col gap-3 p-6 rounded-lg bg-light/10">
           {`${INFURA_GATEWAY}${
             ((data as VideoMetadata)?.video?.item as string)?.split(
               "ipfs://"
@@ -73,7 +73,7 @@ const MetadataSwitch: FunctionComponent<MetadataSwitchProps> = ({
       );
     case "ImageMetadata":
       return (
-        <div className="relative w-full h-full flex flex-col gap-2 items-start justify-start">
+        <div className="relative w-full h-full flex flex-col gap-3 p-6 rounded-lg bg-light/10">
           {`${INFURA_GATEWAY}${
             ((data as ImageMetadata)?.image?.item as string)?.split(
               "ipfs://"

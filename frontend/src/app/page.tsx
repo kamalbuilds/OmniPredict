@@ -149,11 +149,11 @@ export default function Home() {
           )}
         </div>
       </div>
-      <div className="relative w-full h-full justify-start items-center tablet:items-start tablet:justify-center flex flex-col tablet:flex-row gap-20">
+      <div className="relative w-full h-[calc(100vh-80px)] justify-start items-center tablet:items-start tablet:justify-center flex flex-col tablet:flex-row gap-6">
         <div
           className={`relative h-fit tablet:h-full flex items-center tablet:items-start justify-between tablet:justify-center gap-8 flex-wrap tablet:flex-col ${
-            expand && screen === SCREENS[1] ? "w-fit" : "w-full tablet:w-72"
-          }`}
+            expand && screen === SCREENS[1] ? "w-fit" : "w-40 tablet:w-40"
+          } shrink-0`}
         >
           {SCREENS?.slice(0, -1).map((item, key) => {
             return (
