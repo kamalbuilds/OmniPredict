@@ -1,3 +1,4 @@
+
 import { FunctionComponent, JSX } from "react";
 import FeedOptions from "./FeedOptions";
 import MetadataSwitch from "@/components/Feed/modules/MetadataSwitch";
@@ -63,7 +64,7 @@ const Feed: FunctionComponent<FeedProps> = ({
     setNotification
   );
   return (
-    <div className="relative w-full h-full flex items-center justify-start flex-col gap-6 pb-10">
+    <div className="relative w-full h-full flex items-start justify-start flex-col gap-6">
       <FeedOptions
         feedType={feedType}
         setFeedType={setFeedType}
@@ -73,7 +74,7 @@ const Feed: FunctionComponent<FeedProps> = ({
         feedTypeOpen={feedTypeOpen}
       />
       <div
-        className="relative w-full h-fit sm:h-full flex items-start justify-start overflow-y-scroll pb-10 rounded-md px-4"
+        className="relative w-full h-[calc(100vh-200px)] flex items-start justify-start overflow-y-auto pb-10 rounded-md"
         id="scrollTarget"
       >
         <InfiniteScroll

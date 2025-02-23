@@ -2,6 +2,7 @@
 
 import useScreens from "@/components/Common/hooks/useScreens";
 import ScreenSwitch from "@/components/Common/modules/ScreenSwitch";
+import { WavyBackground } from "@/components/ui/wavy-background"; 
 import { INFURA_GATEWAY, SCREENS } from "@/lib/constants";
 import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import Image from "next/legacy/image";
@@ -50,8 +51,17 @@ export default function Home() {
   );
 
   return (
-    <div className="relative w-full flex h-screen items-start justify-between pt-4 px-2 tablet:px-0 gap-4 flex-col tablet:overflow-hidden">
-      <div className="relative w-full h-fit flex items-center justify-between gap-2 flex-row px-2 tablet:px-6">
+    <div className="relative w-full max-w-[99.5vw] mx-auto flex h-screen items-start justify-between pt-4 px-0 gap-4 flex-col tablet:overflow-hidden scale-[1.3] origin-top">
+      <div className="fixed inset-0 -z-10">
+        <WavyBackground
+          className="w-full h-full"
+          backgroundFill="#000000"
+          colors={["#38bdf8", "#818cf8", "#c084fc", "#22d3ee"]}
+          waveOpacity={0.3}
+          blur={5}
+        />
+      </div>
+      <div className="relative w-full h-fit flex items-center justify-between gap-2 flex-row">
         <div
           className="relative w-fit h-fit flex text-white cursor-pointer text-2xl uppercase"
           onClick={() => router.push("/")}

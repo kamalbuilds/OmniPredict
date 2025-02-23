@@ -39,7 +39,7 @@ export default function RootLayout({
 }) {
   return (
     <html>
-      <body>
+      <body className="min-h-screen overflow-x-hidden">
         <Providers>
           <RootLayoutWrapper>
             {children}
