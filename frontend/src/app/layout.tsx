@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
-import Modals from "@/components/Modals/modules/Modals";
 import Providers from "./providers";
+import { RootLayoutWrapper } from "@/components/RootLayoutWrapper";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.dialtone.club"),
@@ -34,15 +34,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html>
       <body>
         <Providers>
-          {children}
-          <Modals />
+          <RootLayoutWrapper>
+            {children}
+          </RootLayoutWrapper>
         </Providers>
       </body>
     </html>
