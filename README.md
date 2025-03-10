@@ -35,6 +35,9 @@ SonicPredict is a decentralized prediction market platform built on Sonic Chain 
 - Transparent market resolution mechanisms
 - On-chain settlement for all transactions
 
+## Demo Video
+
+
 ## 🏗️ Architecture
 
 SonicPredict consists of three main components:
